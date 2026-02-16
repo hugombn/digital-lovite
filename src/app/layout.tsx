@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";  // <--- ESTA É A LINHA MÁGICA QUE FALTA!
 
-export const metadata = {
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
   title: "Digital Lovite",
-  description: "Câmera descartável digital",
+  description: "Câmera Descartável Digital",
 };
 
 export default function RootLayout({
@@ -11,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt">
-      <body>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

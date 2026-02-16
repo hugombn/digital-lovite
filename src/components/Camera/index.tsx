@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { useCamera } from '../../hooks/useCamera';
-import { Camera, Upload, Loader2 } from 'lucide-react';
+import { Image as ImageIcon, Loader2 } from 'lucide-react';
 
 interface CameraProps {
   rollId: string;
@@ -10,7 +10,9 @@ interface CameraProps {
 }
 
 export const CameraComponent = ({ rollId, onUploadComplete }: CameraProps) => {
-  const { uploadMedia } = useCamera(rollId);
+  // Se o hook useCamera ainda não estiver pronto, esta parte pode dar erro.
+  // Se der erro, avisa-me que fazemos uma versão simplificada para teste visual.
+  const { uploadMedia } = useCamera(rollId); 
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -19,44 +21,55 @@ export const CameraComponent = ({ rollId, onUploadComplete }: CameraProps) => {
     if (!file) return;
 
     setLoading(true);
-    const result = await uploadMedia(file);
-    
-    if (result.success) {
-      alert("Foto capturada! Será revelada amanhã às 09:00.");
-      onUploadComplete();
-    } else {
-      alert("Erro ao guardar a foto.");
+    try {
+      // Tenta fazer o upload
+      const result = await uploadMedia(file);
+      
+      if (result && result.success) {
+        // Se correu bem, avisa a página principal para atualizar
+        onUploadComplete();
+      } else {
+        alert("Erro ao guardar. Tenta novamente.");
+      }
+    } catch (error) {
+      console.error("Erro no upload:", error);
+      alert("Erro técnico no upload.");
+    } finally {
+      setLoading(false);
+      // Limpa o input para permitir selecionar o mesmo ficheiro de novo
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
-    setLoading(false);
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 p-6 bg-yellow-50 border-2 border-yellow-200 rounded-3xl shadow-xl">
+    <>
+      {/* O Input real fica escondido */}
       <input
         type="file"
         accept="image/*,video/*"
-        capture="environment" // Abre a câmera traseira no telemóvel
         className="hidden"
+        style={{ display: 'none' }}
         ref={fileInputRef}
         onChange={handleFileChange}
         disabled={loading}
       />
 
+      {/* ESTE É O BOTÃO VISUAL QUE APARECE NO ECRÃ */}
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={loading}
-        className="w-24 h-24 bg-yellow-400 rounded-full border-8 border-yellow-500 flex items-center justify-center active:scale-95 transition-transform shadow-inner disabled:opacity-50"
+        // Usamos a classe CSS que definimos no globals.css
+        className="btn-upload-style"
+        title="Adicionar Foto"
       >
         {loading ? (
-          <Loader2 className="w-10 h-10 animate-spin text-yellow-700" />
+          // Mostra um spinner a rodar se estiver a carregar
+          <Loader2 className="w-6 h-6 animate-spin text-stone-600" />
         ) : (
-          <Camera className="w-10 h-10 text-yellow-900" />
+          // Mostra o ícone da imagem normal
+          <ImageIcon className="w-6 h-6 text-stone-600" />
         )}
       </button>
-      
-      <p className="font-bold text-yellow-800 uppercase tracking-widest text-sm">
-        {loading ? "A Revelar..." : "Tirar Foto"}
-      </p>
-    </div>
+    </>
   );
 };
