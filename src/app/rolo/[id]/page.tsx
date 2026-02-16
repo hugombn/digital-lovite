@@ -44,7 +44,7 @@ export default function RoloPage() {
       {/* Cabeçalho */}
       <header className="header-container">
         <img src="/logo.png" alt="Lovite" className="logo-img" />
-        <h1 className="title">ROLO DE CÂMERA {title} 🎞️</h1>
+        <h1 className="title">ROLO DE CÂMERA {title} </h1>
       </header>
 
       {/* Barra de Tempo e Botão da Câmera */}
