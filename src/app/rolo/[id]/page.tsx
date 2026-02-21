@@ -5,60 +5,69 @@ import { useState, useEffect } from 'react';
 import { CameraComponent } from '../../../components/Camera';
 import { GalleryComponent } from '../../../components/Gallery';
 
+// --- DEFINE AQUI A DATA DO CASAMENTO (Ou a data de teste) ---
+const REVEAL_DATE = new Date('2026-09-12T09:00:00'); 
+
 export default function RoloPage() {
   const params = useParams();
   const idRaw = params?.id as string;
   const title = idRaw ? idRaw.replace(/-/g, ' ').toUpperCase() : '...';
 
-  // --- LÓGICA DO RELÓGIO ---
   const [timeLeft, setTimeLeft] = useState("A calcular...");
+  const [isRevealed, setIsRevealed] = useState(false);
+
   useEffect(() => {
     const updateTimer = () => {
       const now = new Date();
-      const target = new Date();
-      target.setHours(9, 0, 0, 0); // Alvo: 09:00
-      if (now > target) target.setDate(target.getDate() + 1); // Se já passou, é amanhã
-      
-      const diff = target.getTime() - now.getTime();
+      const diff = REVEAL_DATE.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        setTimeLeft("Fotos Reveladas! 🎉");
+        setIsRevealed(true);
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
       const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const m = Math.floor((diff / (1000 * 60)) % 60);
       const s = Math.floor((diff / 1000) % 60);
-      setTimeLeft(`${h} h ${m} min ${s} s`);
+
+      if (d > 0) {
+        setTimeLeft(`${d} d ${h} h ${m} min ${s} s`);
+      } else {
+        setTimeLeft(`${h} h ${m} min ${s} s`);
+      }
     };
+
     const timer = setInterval(updateTimer, 1000);
-    updateTimer();
+    updateTimer(); 
     return () => clearInterval(timer);
   }, []);
 
-  // Função chamada quando o upload termina com sucesso
   const handleUploadSuccess = () => {
-    // Dá refresh à página para a galeria ir buscar a nova foto bloqueada
     window.location.reload();
   };
 
   return (
     <main>
-      {/* Fundo Floral */}
       <img src="/bg-floral.jpg" alt="fundo" className="bg-floral" />
 
-      {/* Cabeçalho */}
       <header className="header-container">
         <img src="/logo.png" alt="Lovite" className="logo-img" />
-        <h1 className="title">ROLO DE CÂMERA {title} </h1>
+        <h1 className="title">ROLO DE CÂMERA {title} 🎞️</h1>
       </header>
 
-      {/* Barra de Tempo e Botão da Câmera */}
       <div className="info-bar">
-        {/* Relógio */}
         <span style={{ minWidth: '140px', textAlign: 'center' }}>{timeLeft}</span>
         
-        {/* O Componente da Câmera AGORA É O BOTÃO VISUAL */}
-        <CameraComponent rollId={idRaw} onUploadComplete={handleUploadSuccess} />
+        {!isRevealed && (
+          <CameraComponent rollId={idRaw} onUploadComplete={handleUploadSuccess} />
+        )}
       </div>
 
-      {/* Galeria */}
       <div className="gallery-grid">
-        <GalleryComponent rollId={idRaw} />
+        {/* AQUI ESTÁ A MAGIA: A página diz à Galeria se está revelado ou não */}
+        <GalleryComponent rollId={idRaw} isRevealed={isRevealed} />
       </div>
     </main>
   );

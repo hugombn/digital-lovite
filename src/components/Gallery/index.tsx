@@ -8,7 +8,8 @@ interface MediaItem {
   type: 'image' | 'video';
 }
 
-export const GalleryComponent = ({ rollId }: { rollId: string }) => {
+// Repara que agora recebemos o "isRevealed" ali em baixo
+export const GalleryComponent = ({ rollId, isRevealed }: { rollId: string, isRevealed: boolean }) => {
   const [items, setItems] = useState<MediaItem[]>([]);
 
   useEffect(() => {
@@ -23,29 +24,26 @@ export const GalleryComponent = ({ rollId }: { rollId: string }) => {
     fetchMedia();
   }, [rollId]);
 
-  // Força revelação para testares agora (Muda para false depois!)
-  const forceReveal = false; 
-
   return (
     <>
-      {forceReveal && items.length > 0 && (
+      {isRevealed && items.length > 0 && (
         <div className="revealed-header">
-           <div>PRONTAS A DESCARREGAR</div>
-           <div style={{fontSize: '20px'}}>💕</div>
+           <div style={{ letterSpacing: '2px' }}>PRONTAS A DESCARREGAR</div>
+           <div style={{ fontSize: '20px', marginTop: '5px' }}>💕</div>
         </div>
       )}
 
       {items.map((item, index) => (
-        <div key={index} className={`photo-card ${forceReveal ? 'revealed' : ''}`}>
+        <div key={index} className={`photo-card ${isRevealed ? 'revealed' : ''}`}>
           
-          {forceReveal ? (
-            // --- LINK PARA ABRIR A FOTO ORIGINAL ---
+          {isRevealed ? (
+            // --- MODO REVELADO ---
             <a 
                href={item.url} 
                target="_blank" 
                rel="noopener noreferrer"
                className="photo-link"
-               title="Clica para ver original"
+               title="Clique para ver original e descarregar"
             >
               {item.type === 'video' ? (
                 <video src={item.url} className="photo-img" />
@@ -54,11 +52,18 @@ export const GalleryComponent = ({ rollId }: { rollId: string }) => {
               )}
             </a>
           ) : (
+            // --- MODO BLOQUEADO ---
             <div className="lock-icon">🔒</div>
           )}
 
         </div>
       ))}
+      
+      {items.length === 0 && (
+        <div style={{ gridColumn: '1/-1', textAlign: 'center', opacity: 0.5, padding: '40px' }}>
+          Ainda não há memórias neste rolo. Começa a fotografar! 📸
+        </div>
+      )}
     </>
   );
 };
