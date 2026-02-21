@@ -28,8 +28,7 @@ export const GalleryComponent = ({ rollId, isRevealed }: { rollId: string, isRev
     <>
       {isRevealed && items.length > 0 && (
         <div className="revealed-header">
-           <div style={{ letterSpacing: '2px' }}>PRONTAS A DESCARREGAR</div>
-           <div style={{ fontSize: '20px', marginTop: '5px' }}>💕</div>
+           <div style={{ letterSpacing: '2px' }}>PRONTAS A DESCARREGAR 💕</div>
         </div>
       )}
 

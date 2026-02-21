@@ -6,7 +6,7 @@ import { CameraComponent } from '../../../components/Camera';
 import { GalleryComponent } from '../../../components/Gallery';
 
 // --- DEFINE AQUI A DATA DO CASAMENTO (Ou a data de teste) ---
-const REVEAL_DATE = new Date('2026-09-12T09:00:00'); 
+const REVEAL_DATE = new Date('2026-02-12T09:00:00'); 
 
 export default function RoloPage() {
   const params = useParams();
@@ -54,7 +54,7 @@ export default function RoloPage() {
 
       <header className="header-container">
         <img src="/logo.png" alt="Lovite" className="logo-img" />
-        <h1 className="title">ROLO DE CÂMERA {title} 🎞️</h1>
+        <h1 className="title">ROLO DE CÂMERA {title} </h1>
       </header>
 
       <div className="info-bar">
