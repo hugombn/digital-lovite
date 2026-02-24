@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase';
 import { getRevealDate } from '../lib/utils';
 
 export const useCamera = (rollId: string) => {
-  const uploadMedia = async (file: File) => {
+  const uploadMedia = async (file: File, mediaType: 'image' | 'video' = 'image') => {
     try {
       // 1. Criar um nome único para o ficheiro
       const fileExt = file.name.split('.').pop() || 'jpg';
@@ -25,7 +25,7 @@ export const useCamera = (rollId: string) => {
       const { error: dbError } = await supabase.from('media').insert({
         roll_id: rollId,
         url: publicUrl,
-        type: file.type.startsWith('video') ? 'video' : 'image',
+        type: mediaType,
         reveal_at: getRevealDate(), // Definido em lib/utils.ts
       });
 

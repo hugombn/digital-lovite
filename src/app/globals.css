@@ -11,13 +11,13 @@ body {
   overflow-x: hidden;
 }
 
-/* Fundo */
+/* Fundo Fixo */
 .bg-floral {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
   object-fit: cover; opacity: 0.5; z-index: -1;
 }
 
-/* Cabeçalho (Barra Branca) */
+/* Cabeçalho Branco */
 .header-container {
   background-color: #ffffff; width: 100%;
   padding: 10px 20px; display: flex; flex-direction: column;
@@ -26,8 +26,11 @@ body {
   position: sticky; top: 0; z-index: 50;
 }
 
+/* --- LOGO: A PARTE IMPORTANTE --- */
 .logo-img {
-  width: 100px; mix-blend-mode: multiply; margin-bottom: 10px; margin-right: 250px; display: none;
+  width: 20px;
+  margin-bottom: 5px;
+  display: none; /* <--- 1. ESCONDE NO MÓVEL (Default) */
 }
 
 .title {
@@ -35,14 +38,22 @@ body {
   margin: 0; font-weight: 400; text-align: center;
 }
 
+/* --- VERSÃO PC / ECRÃ INTEIRO --- */
 @media (min-width: 768px) {
   .header-container {
     flex-direction: row; padding: 15px 40px; min-height: 80px;
   }
+
   .logo-img {
-    position: absolute; left: 40px; top: 50%; transform: translateY(-50%);
-    width: 160px; margin-bottom: 0;
+    display: block; /* <--- 2. MOSTRA NO PC! (Muito Importante) */
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px; /* Tamanho do logo no PC */
+    margin-bottom: 0;
   }
+  
   .title { font-size: 22px; }
 }
 
@@ -60,62 +71,61 @@ body {
 }
 .btn-upload-style:hover { transform: scale(1.05); }
 
-/* --- AQUI ESTÁ A MUDANÇA DA GRELHA --- */
+/* --- GRELHA (QUADRADOS GRANDES) --- */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Telemóvel: 2 colunas */
-  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
   width: 100%;
-  padding: 0 10px 100px 10px; /* Margens pequenas no telemóvel */
+  padding: 0 15px 100px 15px;
 }
 
 @media (min-width: 768px) {
   .gallery-grid {
-    grid-template-columns: repeat(6, 1fr); /* PC: MANTIVE AS 6 COLUNAS */
-    gap: 20px;
-    max-width: 98vw; /* ESTICA ATÉ ÀS BORDAS (98% da largura do ecrã) */
-    padding: 0 20px 100px 20px; /* Margens laterais mínimas */
+    grid-template-columns: repeat(6, 1fr);
+    gap: 25px;
+    max-width: 98vw;
+    padding: 0 20px 100px 20px;
   }
 }
 
-/* O Quadrado Base */
+/* --- QUADRADOS E MOLDURAS --- */
 .photo-card {
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
+  border-radius: 4px;
   position: relative;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  overflow: hidden;
   background-color: #1F1F1F;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
 }
 
-/* --- ESTILO MOLDURA (POLAROID) --- */
 .photo-card.revealed {
   background-color: white;
-  padding: 8px 8px 25px 8px; /* Mais espaço em baixo para parecer polaroid */
-  border: 1px solid #e0e0e0;
+  padding: 10px 10px 35px 10px; /* Efeito Polaroid */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  border: 1px solid #ddd;
 }
 
 .photo-card.revealed:hover {
-  transform: translateY(-5px); /* Levanta um pouco ao passar o rato */
-  cursor: pointer;
+  transform: scale(1.02);
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
 
-/* Cadeado */
-.lock-icon {
-  position: absolute; bottom: 12px; right: 12px; color: white;
-  background: rgba(255,255,255,0.15); padding: 5px;
-  border-radius: 6px; width: 24px; height: 24px;
-}
-
-/* Imagem dentro da moldura */
 .photo-link { display: block; width: 100%; height: 100%; }
 
 .photo-img {
   width: 100%; height: 100%;
-  object-fit: cover; /* Garante que a foto preenche o quadrado sem distorcer */
-  border-radius: 4px;
+  object-fit: cover;
   display: block;
+  background-color: #f0f0f0;
+  border: 1px solid #eee;
+}
+
+.lock-icon {
+  position: absolute; bottom: 12px; right: 12px; color: white;
+  background: rgba(255,255,255,0.15); padding: 5px;
+  border-radius: 6px; width: 24px; height: 24px;
 }
 
 .revealed-header {

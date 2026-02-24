@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import { useCamera } from '../../hooks/useCamera';
-import { Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Image as ImageIcon, Loader2 } from 'lucide-react'; // Tirei o VideoIcon
 
 interface CameraProps {
   rollId: string;
@@ -10,8 +10,6 @@ interface CameraProps {
 }
 
 export const CameraComponent = ({ rollId, onUploadComplete }: CameraProps) => {
-  // Se o hook useCamera ainda não estiver pronto, esta parte pode dar erro.
-  // Se der erro, avisa-me que fazemos uma versão simplificada para teste visual.
   const { uploadMedia } = useCamera(rollId); 
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -20,13 +18,14 @@ export const CameraComponent = ({ rollId, onUploadComplete }: CameraProps) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Deteta se é vídeo ou imagem
+    const fileType = file.type.startsWith('video/') ? 'video' : 'image';
+
     setLoading(true);
     try {
-      // Tenta fazer o upload
-      const result = await uploadMedia(file);
+      const result = await uploadMedia(file, fileType);
       
       if (result && result.success) {
-        // Se correu bem, avisa a página principal para atualizar
         onUploadComplete();
       } else {
         alert("Erro ao guardar. Tenta novamente.");
@@ -36,17 +35,16 @@ export const CameraComponent = ({ rollId, onUploadComplete }: CameraProps) => {
       alert("Erro técnico no upload.");
     } finally {
       setLoading(false);
-      // Limpa o input para permitir selecionar o mesmo ficheiro de novo
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
   return (
     <>
-      {/* O Input real fica escondido */}
+      {/* O input continua a aceitar VÍDEOS e FOTOS */}
       <input
         type="file"
-        accept="image/*,video/*"
+        accept="image/*,video/*,video/mp4,video/x-m4v"
         className="hidden"
         style={{ display: 'none' }}
         ref={fileInputRef}
@@ -54,19 +52,17 @@ export const CameraComponent = ({ rollId, onUploadComplete }: CameraProps) => {
         disabled={loading}
       />
 
-      {/* ESTE É O BOTÃO VISUAL QUE APARECE NO ECRÃ */}
+      {/* O BOTÃO VOLTA A SER SIMPLES (SÓ ÍCONE DA GALERIA) */}
       <button
         onClick={() => fileInputRef.current?.click()}
         disabled={loading}
-        // Usamos a classe CSS que definimos no globals.css
         className="btn-upload-style"
-        title="Adicionar Foto"
+        title="Adicionar Foto ou Vídeo"
       >
         {loading ? (
-          // Mostra um spinner a rodar se estiver a carregar
           <Loader2 className="w-6 h-6 animate-spin text-stone-600" />
         ) : (
-          // Mostra o ícone da imagem normal
+          // Voltámos ao ícone original simples
           <ImageIcon className="w-6 h-6 text-stone-600" />
         )}
       </button>
