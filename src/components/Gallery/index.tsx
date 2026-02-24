@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { Lock } from 'lucide-react';
 
 interface MediaItem {
   id: string; roll_id: string; url: string;
@@ -52,7 +53,9 @@ export const GalleryComponent = ({ rollId, isRevealed }: { rollId: string, isRev
             </a>
           ) : (
             // --- MODO BLOQUEADO ---
-            <div className="lock-icon">🔒</div>
+            <div className="lock-icon flex items-center justify-center">
+              <Lock size={14} color="white" />
+            </div>
           )}
 
         </div>
